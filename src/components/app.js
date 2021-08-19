@@ -7,6 +7,21 @@ import AddBook from "./pages/add-book";
 
 
 export default class App extends Component {
+  constructor() {
+    super()
+
+    this.state = {
+      booksData: []
+    }
+  }
+
+  componentDidMount() {
+    fetch("http://127.0.0.1:5000/book/get")
+    .then(response => response.json())
+    .then(responseData => this.setState({booksData: responseData})) //could be ({ data }) if both were named data
+    .catch(error => console.log("Error fetching all books sucka!", error));
+  }
+
   render() {
     return (
       <BrowserRouter>
@@ -16,7 +31,7 @@ export default class App extends Component {
           <Navbar />
 
           <Switch>
-            <Route exact path = "/" component = {BooksWrapper} />
+            <Route exact path = "/" render = {props => <BooksWrapper renderedData={this.state.booksData} {...props}/>} /> 
             <Route path = "/add-book" component = {AddBook} />
           </Switch>
 
