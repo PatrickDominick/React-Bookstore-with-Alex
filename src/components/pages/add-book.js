@@ -26,10 +26,42 @@ export default class AddBook extends Component {
         })
     }
 
+    handleSubmit(event) {
+        event.preventDefault()
+
+        fetch("http://127.0.0.1:5000/book/add", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+                title: this.state.title, 
+                author: this.state.author,
+                review: this.state.review,
+                user_id: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data !== "Book added successfully") {
+                console.log(data)
+            }
+            else {
+                fetch(`http://127.0.0.1:5000/book/get/title/${this.state.title}`)
+                .then(response => response.json())
+                .then(data => {
+                    this.props.handleSuccessfulAddBook(data)
+                    this.handleClear()
+                    this.props.history.push("/")
+                })
+                .catch(error => console.log("Error getting new book: ", error))
+            }
+        })
+        .catch(error => console.log("Error adding book:", error))
+    }
+
     render() {
         return (
             <div className="add-book-form-wrapper">
-                <form>
+                <form onSubmit = {this.handleSubmit.bind(this)}>
 
                     <input 
                         type="text" 
@@ -53,7 +85,7 @@ export default class AddBook extends Component {
 
                     </textarea>
 
-                    <button type = "submit"> Submit </button>
+                    <button type = "submit" > Submit </button>
                     <button type = "button" onClick={this.handleClear}>Clear</button>
                 </form>
             </div>

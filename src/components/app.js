@@ -13,6 +13,12 @@ export default class App extends Component {
     this.state = {
       booksData: []
     }
+
+    this.handleSuccessfulAddBook = this.handleSuccessfulAddBook.bind(this)
+  }
+
+  handleSuccessfulAddBook(newBook) {
+    this.setState({ booksData: [...this.state.booksData, newBook] })
   }
 
   componentDidMount() {
@@ -32,7 +38,7 @@ export default class App extends Component {
 
           <Switch>
             <Route exact path = "/" render = {props => <BooksWrapper renderedData={this.state.booksData} {...props}/>} /> 
-            <Route path = "/add-book" component = {AddBook} />
+            <Route path = "/add-book" render = {props => <AddBook handleSuccessfulAddBook={this.handleSuccessfulAddBook} {...props} />} />
           </Switch>
 
         </div>
